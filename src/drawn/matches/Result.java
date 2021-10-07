@@ -19,13 +19,8 @@ public class Result {
 	public static int getNumDraws(int year) throws IOException {
 		HttpURLConnection connection = null;
 		String urlString = "https://jsonmock.hackerrank.com/api/football_matches?year=" + year;
-
-		URL url = new URL(urlString);
-		connection = (HttpURLConnection) url.openConnection();
-
-		connection.setRequestMethod("GET");
-		connection.setConnectTimeout(5000);
-		connection.setReadTimeout(5000);
+		connection = getConnection(urlString, connection);
+		
 		
 		BufferedReader reader;
 		StringBuffer responseContent = new StringBuffer();
@@ -47,7 +42,26 @@ public class Result {
 
 		}
 		
+		
+		
 		System.out.println(responseContent.toString());
 		return 0;
+	}
+	private static HttpURLConnection getConnection(String urlString, HttpURLConnection connection) {
+		try {
+			URL url = new URL(urlString);
+			connection = (HttpURLConnection) url.openConnection();
+
+			connection.setRequestMethod("GET");
+			connection.setConnectTimeout(5000);
+			connection.setReadTimeout(5000);
+
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return connection;
+
 	}
 }
