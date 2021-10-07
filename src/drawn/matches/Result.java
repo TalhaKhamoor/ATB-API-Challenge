@@ -21,32 +21,12 @@ public class Result {
 		String urlString = "https://jsonmock.hackerrank.com/api/football_matches?year=" + year;
 		connection = getConnection(urlString, connection);
 		
+		String jString = getJSONString(connection);
 		
-		BufferedReader reader;
-		StringBuffer responseContent = new StringBuffer();
-		String line;
-
-		if (connection.getResponseCode() > 299) {
-			reader = new BufferedReader(new InputStreamReader(connection.getErrorStream()));
-			while ((line = reader.readLine()) != null) {
-				responseContent.append(line + "\n");
-			}
-			reader.close();
-
-		} else {
-			reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-			while ((line = reader.readLine()) != null) {
-				responseContent.append(line);
-			}
-			reader.close();
-
-		}
-		
-		
-		
-		System.out.println(responseContent.toString());
+		System.out.println(jString);
 		return 0;
 	}
+	
 	private static HttpURLConnection getConnection(String urlString, HttpURLConnection connection) {
 		try {
 			URL url = new URL(urlString);
@@ -63,5 +43,34 @@ public class Result {
 		}
 		return connection;
 
+	}
+	
+	private static String getJSONString(HttpURLConnection connection) {
+		BufferedReader reader;
+		StringBuffer responseContent = new StringBuffer();
+		String line;
+		try {
+			if (connection.getResponseCode() > 299) {
+				reader = new BufferedReader(new InputStreamReader(connection.getErrorStream()));
+				while ((line = reader.readLine()) != null) {
+					responseContent.append(line + "\n");
+				}
+				reader.close();
+
+			} else {
+				reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+				while ((line = reader.readLine()) != null) {
+					responseContent.append(line);
+				}
+				reader.close();
+
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			connection.disconnect();
+		}
+		return responseContent.toString();
 	}
 }
