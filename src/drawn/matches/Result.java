@@ -7,24 +7,39 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 public class Result {
 
-	/*
-	 * Complete the 'getNumDraws' function below.
-	 *
-	 * The function is expected to return an INTEGER. The function accepts INTEGER
-	 * year as a parameter.
-	 */
-
 	public static int getNumDraws(int year) throws IOException {
+		int numDraws = 0;
 		HttpURLConnection connection = null;
 		String urlString = "https://jsonmock.hackerrank.com/api/football_matches?year=" + year;
 		connection = getConnection(urlString, connection);
 		
 		String jString = getJSONString(connection);
+		JSONObject jObj = new JSONObject(jString);
 		
-		System.out.println(jString);
-		return 0;
+		for (int page = 1; page <= jObj.getInt("total_pages"); page++) {
+			String urlStringWithPage = urlString + "&page=" + page;
+			connection = getConnection(urlStringWithPage, connection);
+			
+			jString = getJSONString(connection);
+			jObj = new JSONObject(jString);
+			JSONArray arr = jObj.getJSONArray("data");
+
+			for (int i = 0; i < arr.length(); i++) {
+				int team1goals = Integer.parseInt(arr.getJSONObject(i).getString("team1goals"));
+				int team2goals = Integer.parseInt(arr.getJSONObject(i).getString("team2goals"));
+
+				if (team1goals == team2goals)
+					numDraws++;
+
+			}
+
+		}
+		return numDraws;
 	}
 	
 	private static HttpURLConnection getConnection(String urlString, HttpURLConnection connection) {

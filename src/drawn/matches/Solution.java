@@ -9,6 +9,7 @@ import java.io.OutputStreamWriter;
 public class Solution {
 
 	public static void main(String[] args) throws IOException {
+		System.out.print("Please enter the year: ");
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(System.out));
 
@@ -16,7 +17,7 @@ public class Solution {
 
         int result = Result.getNumDraws(year);
 
-        bufferedWriter.write(String.valueOf(result));
+        bufferedWriter.write("The amount of draws in the year " + year + " were: " +String.valueOf(result));
         bufferedWriter.newLine();
 
         bufferedReader.close();
